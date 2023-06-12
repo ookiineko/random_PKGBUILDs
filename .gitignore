@@ -1,0 +1,6 @@
+# source/binary tarballs
+**/*.tar.*
+
+# makepkg
+*/pkg/
+*/src/
