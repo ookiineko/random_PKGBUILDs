@@ -1,0 +1,13 @@
+--- CMakeLists.txt.orig	2023-06-12 19:25:20.901099620 +0800
++++ CMakeLists.txt	2023-06-12 19:30:44.803594997 +0800
+@@ -1,5 +1,9 @@
+ cmake_minimum_required(VERSION 3.12)
+ 
++set(CMAKE_C_COMPILER "clang")
++set(CMAKE_CXX_COMPILER "clang++")
++set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
++
+ if(IOS AND (NOT DEFINED CMAKE_OSX_DEPLOYMENT_TARGET))
+ set(CMAKE_OSX_DEPLOYMENT_TARGET 10.0)
+ endif()
+ 

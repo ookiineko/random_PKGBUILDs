@@ -1,20 +1,27 @@
-#Maintainer: fuzzbop <fuzzbop@gmail.com>
+# Maintainer: Ookiineko <chiisaineko@protonmail.com>
+# Contributor: fuzzbop <fuzzbop@gmail.com>
 
 pkgname=krkrsdl2-git
 pkgver=20210813.g473defe
 pkgrel=1
-pkgdesc="SDL2 port of kirikiri"
+pkgdesc="SDL2 port of Kirikiri"
 arch=('i686' 'x86_64')
 url="https://github.com/krkrsdl2/krkrsdl2"
-license=('GPL2')
-depends=('sdl2')
+license=('MIT')
+depends=('sdl2' 'libvorbis')
 makedepends=('git' 'cmake')
 conflicts=('krkrsdl2')
 provides=('krkrsdl2')
-source=("git+$url.git"
-        'pthread.patch')
+source=(
+	"git+$url.git"
+	'pthread.patch'
+	'clang.patch'
+	'vorbis-decoder.patch'
+	)
 md5sums=('SKIP'
-         '8e2e904a2ca6173289282acb08e7f140')
+         '8e2e904a2ca6173289282acb08e7f140'
+         'a795e90ac88d245346e9351d7fc5a89c'
+         'abf310103a6f0423606d26ff8d8c400d')
 
 
 pkgver() {
@@ -27,16 +34,21 @@ prepare() {
   # Init submodule(s)
   cd "${srcdir}/${pkgname::-4}"
   patch -p1 < "${srcdir}/pthread.patch"
+  patch -p0 < "${srcdir}/clang.patch"
   git submodule update --init --recursive
+
+  # files created by patches:
+  rm -f external/krkrz/sound/VorbisWaveDecoder.{cpp,h}
+
+  # fix line endings
+  dos2unix external/krkrz/sound/WaveIntf.cpp
+
+  patch -p1 < "${srcdir}/vorbis-decoder.patch"
 }
 
 build() {
-    mkdir -p "${srcdir}/build"
-    cd "${srcdir}/build"
-    cmake -DCMAKE_INSTALL_PREFIX="/usr" \
-          -DLINUX=1 \
-        "../${pkgname::-4}"
-    make
+    cmake -B build -DCMAKE_INSTALL_PREFIX="/usr" -S "${pkgname::-4}"
+    cmake --build build -j $(nproc --all)
 }
 
 package() {
