@@ -17,13 +17,12 @@ source=(
 	'pthread.patch'
 	'clang.patch'
 	'vorbis-decoder.patch'
-	'fix-kagparser.patch'
+#	'native-kagparser.patch'
 	)
 md5sums=('SKIP'
          '8e2e904a2ca6173289282acb08e7f140'
          'a795e90ac88d245346e9351d7fc5a89c'
-         'abf310103a6f0423606d26ff8d8c400d'
-         'd2098dbea5b7f4672f92886f96e11de5')
+         'abf310103a6f0423606d26ff8d8c400d')
 
 
 pkgver() {
@@ -41,14 +40,14 @@ prepare() {
 
   # files created by patches:
   rm -f external/krkrz/sound/VorbisWaveDecoder.{cpp,h}
-  rm -f external/krkrz/utils/KAGParser.{cpp,h}
+#  rm -f external/krkrz/utils/KAGParser.{cpp,h}
 
   # fix line endings
   dos2unix external/krkrz/sound/WaveIntf.cpp
-  dos2unix external/krkrz/base/ScriptMgnIntf.cpp
+#  dos2unix external/krkrz/base/ScriptMgnIntf.cpp
 
   patch -p1 < "${srcdir}/vorbis-decoder.patch"
-  patch -p1 < "${srcdir}/fix-kagparser.patch"
+#  patch -p1 < "${srcdir}/native-kagparser.patch"
 }
 
 build() {
