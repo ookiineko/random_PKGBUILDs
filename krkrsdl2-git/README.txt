@@ -1,3 +1,4 @@
-* use clang and libc++ to avoid libstdc++ assertion crashes
+* use clang and libc++ to avoid libstdc++ assertion crashes on archlinux
 
-* vorbis decoder patch kanged from kirikiroid2 as replacement of the wuvorbis plugin on Windows (probably useful to get some simple krkr2 games to work)
+* vorbis decoder (as a replacement of the wuvorbis plugin on Windows) and KAGParser patches 
+  kanged from Kirikiroid2 (probably useful when porting some KRKRZ games to krkrsdl2)
