@@ -51,7 +51,7 @@ prepare() {
 }
 
 build() {
-    cmake -B build -DCMAKE_INSTALL_PREFIX="/usr" -S "${pkgname::-4}"
+    cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="/usr" -S "${pkgname::-4}"
     cmake --build build -j $(nproc --all)
 }
 
