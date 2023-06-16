@@ -2,59 +2,37 @@
 # Contributor: fuzzbop <fuzzbop@gmail.com>
 
 pkgname=krkrsdl2-git
-pkgver=20230610.gc987407
+pkgver=20230613.g893b590
 pkgrel=1
-pkgdesc="SDL2 port of Kirikiri"
+pkgdesc="cross-platform Kirikiri Z port based on SDL2"
 arch=('arm' 'aarch64' 'i686' 'x86_64')
 url="https://github.com/krkrsdl2/krkrsdl2"
 license=('MIT')
-depends=('sdl2' 'libvorbis')
+depends=('sdl2')
 makedepends=('git' 'cmake')
 conflicts=('krkrsdl2')
 provides=('krkrsdl2')
-source=(
-	"git+$url.git"
-	'pthread.patch'
-	'clang.patch'
-	'vorbis-decoder.patch'
-#	'native-kagparser.patch'
-	)
+source=('git+https://github.com/krkrsdl2/krkrsdl2-env-example.git'
+	'clang.patch')
 md5sums=('SKIP'
-         '8e2e904a2ca6173289282acb08e7f140'
-         'a795e90ac88d245346e9351d7fc5a89c'
-         'abf310103a6f0423606d26ff8d8c400d')
-
+         'e7a467463cbf448c3a7ac9c8ff8e6a0d')
 
 pkgver() {
-  # Update version
-  cd "${pkgname::-4}"
-  echo "$(git show -s --format="%ci"|grep -oP '\d{4}-\d{2}-\d{2}'|sed 's:-::g').g$(git describe --always)"
+    # Update version
+    cd krkrsdl2-env-example
+    echo "$(git show -s --format="%ci"|grep -oP '\d{4}-\d{2}-\d{2}'|sed 's:-::g').g$(git describe --always)"
 }
 
 prepare() {
-  # Init submodule(s)
-  cd "${srcdir}/${pkgname::-4}"
-  patch -p1 < "${srcdir}/pthread.patch"
-  patch -p0 < "${srcdir}/clang.patch"
-  git submodule update --init --recursive --force
-
-  # files created by patches:
-  rm -f external/krkrz/sound/VorbisWaveDecoder.{cpp,h}
-#  rm -f external/krkrz/utils/KAGParser.{cpp,h}
-
-  # fix line endings
-  dos2unix external/krkrz/sound/WaveIntf.cpp
-#  dos2unix external/krkrz/base/ScriptMgnIntf.cpp
-
-  patch -p1 < "${srcdir}/vorbis-decoder.patch"
-#  patch -p1 < "${srcdir}/native-kagparser.patch"
+    cd "${srcdir}/krkrsdl2-env-example"
+    patch -p1 < "${srcdir}/clang.patch"
 }
 
 build() {
-    cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="/usr" -S "${pkgname::-4}"
+    cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="/usr" -S krkrsdl2-env-example
     cmake --build build -j $(nproc --all)
 }
 
 package() {
-    install -Dm755 "${srcdir}/build/${pkgname::-4}" "${pkgdir}/usr/bin/${pkgname::-4}"
+    install -Dm755 "${srcdir}/build/krkrsdl2_repo/${pkgname::-4}" "${pkgdir}/usr/bin/${pkgname::-4}"
 }
